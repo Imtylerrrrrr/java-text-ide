@@ -1,0 +1,16 @@
+# 개인정보·과제 원본 자료 (public 레포에 올리지 않음)
+*.docx
+*.doc
+*.pdf
+~$*
+_workspace/
+
+# 빌드·실행 결과물
+out/
+*.class
+*.error
+ide.log
+
+.DS_Store
+.idea/
+*.iml
