@@ -21,7 +21,7 @@ B(컴파일·실행) 담당이 A(메뉴·업로드·로그) 담당에게 제공�
 
 ```java
 public class CompileManager {
-    public boolean compile(File javaFile) throws IOException, InterruptedException;
+    public boolean compile(File javaFile);
     public String  getSummary();
     public int     getErrorCount();
     public List<Integer> getErrorLines();
@@ -36,12 +36,14 @@ public class CompileManager {
 - 부수효과
   - 실패 시: stderr 전체를 `<파일명>.error`(예: `BonusPointAccount.java.error`)에 저장 (**원본 `.java`와 같은 폴더**), 오류 개수·줄 번호 저장
   - 성공 시: 이전 `.error` 파일 삭제, `getErrorFile()`은 `null`
+  - javac 실행 자체가 안 될 때(javac 없음 등): `false`, 오류 개수 `0`, `getErrorFile()`은 `null`
 - 화면 출력: **안 함** (출력은 A가 `getSummary()`로)
 
 ### `String getSummary()`
 직전 `compile()` 결과 한 줄. A는 이걸 그대로 `println` 한다.
 - 성공: `compiled successfully - BonusPointAccount.java`
 - 실패: `2 compile errors occurred (lines 3, 11) - BonusPointAccount.java.error`
+- javac 실행 불가: `Error: cannot run javac - BonusPointAccount.java`
 
 ### `int getErrorCount()` / `List<Integer> getErrorLines()`
 로그 문자열 만들 때 사용 (`COMPILE FAIL (2 errors) - ...`). 성공 시 `0` / 빈 리스트.
@@ -55,7 +57,7 @@ public class CompileManager {
 
 ```java
 public class RunManager {
-    public int run(File javaFile, String args) throws IOException, InterruptedException;
+    public int run(File javaFile, String args);
 }
 ```
 
@@ -65,6 +67,7 @@ public class RunManager {
 - 작업 폴더: `.java` 파일이 있는 폴더 (`ProcessBuilder.directory(javaFile.getParentFile())`)
 - 화면 출력: 대상 프로그램의 **stdout과 stderr를 모두** 출력 (B가 직접)
 - 반환: 종료 코드 (`Exit Code: N` 출력과 로그는 A가)
+- java 실행 불가(java 없음 등): `Error: cannot run java - <클래스명>` 출력 후 `-1` 반환
 
 ---
 
@@ -91,8 +94,11 @@ logger.write("RUN args=\"" + args + "\" exit=" + exit);
 ```
 
 ## 예외 처리 약속
-- B 메서드는 `IOException`, `InterruptedException`을 **던지기만** 한다.
-- A는 메뉴 처리부에서 반드시 `try-catch`로 잡아 메시지만 출력하고 메뉴로 복귀 (비정상 종료 금지).
+- B 메서드는 `IOException`, `InterruptedException`을 **안에서 직접 try-catch로 처리**한다. `throws` 없음.
+- 그래서 A는 `compile()`, `run()`을 try-catch 없이 그냥 호출하면 된다.
+  - `compile()` 실패 이유는 `getSummary()` 문자열에 들어 있음 (위 참고)
+  - `run()`이 `-1`을 돌려주면 B가 이미 에러 메시지를 출력한 상태
+- 단, 잘못된 메뉴 번호·빈 입력 등 **A 자신의 입력 처리**에서 나는 예외는 A가 막아야 한다 (비정상 종료 금지).
 
 ## 같이 쓰는 상수 (위치: `JavaIDE` 또는 별도 `Messages`)
 
