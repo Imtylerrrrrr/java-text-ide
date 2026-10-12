@@ -20,6 +20,8 @@ java -cp out JavaIDE
 5. Compile Error File: 저장된 `.error` 파일 내용을 보여줍니다.
 6. Show Log: 작업 기록(`ide.log`)을 보여줍니다.
 
+`q`를 입력하면 IDE를 종료합니다. 그 외 잘못된 입력은 `Error: invalid choice - <입력>`을 출력합니다.
+
 ## 파일 구성
 
 | 파일 | 역할 | 담당 |

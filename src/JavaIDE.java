@@ -57,7 +57,6 @@ public class JavaIDE {
                     case "4": reset(); break;
                     case "5": showErrorFile(); break;
                     case "6": showLog(); break;
-                    case "0":
                     case "q":
                     case "Q":
                         log("EXIT");
