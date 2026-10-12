@@ -100,10 +100,13 @@ logger.write("RUN args=\"" + args + "\" exit=" + exit);
 static final String NO_FILE       = "Error: no file uploaded";
 static final String COMPILE_FIRST = "Error: compile the file first";
 static final String NO_ERROR_FILE = "Error: no compile error file";
-static final String DASH = " - ";   // 하이픈 (결정 사항 1 참고)
+static final String VALIDATION_DASH = " \u2013 ";  // 입력 검증 메시지용 en dash (결정 사항 1 참고)
 ```
 
 ## 결정 사항
-1. **대시는 하이픈 `-`** (메시지·로그 모두). PDF 설명문은 en dash `–`지만 실행 예시 화면과 로그 예시는 `-`라서, 실제 출력 기준인 예시를 따름. 터미널 인코딩 문제도 피할 수 있음.
+1. **대시는 과제 PDF 글자 그대로 따름.**
+   - 입력 검증 메시지(`file not found`, `not a java file`, `file already uploaded`)는 PDF 검증 표대로 en dash `–` (예: `Error: file not found – X.java`)
+   - 컴파일 결과(`compiled successfully - …`, `… compile errors occurred … - …`)와 `ide.log`는 PDF 실행 예시대로 하이픈 `-`
+   - en dash가 Windows 콘솔에서도 깨지지 않도록 `JavaIDE.main`에서 출력을 UTF-8로 설정함
 2. **`.error` 파일은 원본 `.java`와 같은 폴더**에 `<파일명>.java.error`로 저장. 컴파일·실행도 그 폴더를 작업 디렉터리로 함 (`.class`도 같은 폴더에 생김).
 3. **인자는 공백으로만 분리**, 따옴표로 묶은 인자(`"Kim Lee"`)는 지원 안 함. 과제 예시(`10000 Kim`)에 필요 없고 구현이 단순함. 보고서 특이 사항에 한계로 명시.
